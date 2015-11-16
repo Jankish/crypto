@@ -20,7 +20,7 @@ public class PrimeGenerator {
 				primes.add(i);
 			i += 1;
 		}
-		
+
 		System.out.println("Printing primes");
 		for(long l: primes)
 			System.out.println(l);
@@ -29,16 +29,16 @@ public class PrimeGenerator {
 	}
 
 
-	/** calculate the square root of a biginteger in logarithmic time 
-	  public BigInteger squareroot(biginteger x) { 
-	  biginteger right = x, left = biginteger.zero, mid; 
-	  while(right.subtract(left).compareto(biginteger.one) > 0) { 
-	  mid = (right.add(left)).shiftright(1);
-	  if(mid.multiply(mid).compareto(x) > 0) 
-	  right = mid; 
-	  else 
-	  left = mid; 
-	  } 
-	  return left; 
-	  }*/
+	/**calculate the square root of a biginteger in logarithmic time*/
+	public static BigInteger squareroot(BigInteger x) { 
+		BigInteger right = x, left = BigInteger.ZERO, mid; 
+		while(right.subtract(left).compareTo(BigInteger.ONE) > 0) { 
+			mid = (right.add(left)).shiftRight(1);
+			if(mid.multiply(mid).compareTo(x) > 0) 
+				right = mid; 
+			else 
+				left = mid; 
+		} 
+		return left; 
+	}
 }
