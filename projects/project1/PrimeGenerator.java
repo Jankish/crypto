@@ -21,9 +21,9 @@ public class PrimeGenerator {
 			i += 1;
 		}
 
-		System.out.println("Printing primes");
+/**		System.out.println("Printing primes");
 		for(long l: primes)
-			System.out.println(l);
+			System.out.println(l);*/
 
 		return primes;
 	}
