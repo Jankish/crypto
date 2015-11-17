@@ -3,11 +3,11 @@ import java.util.*;
 
 public class PrimeGenerator {
 
-	public static ArrayList<Long> GeneratePrimeNumbers(long size) { 
+	public static ArrayList<Integer> generatePrimeNumbers(long size) { 
 		double k;
 		int j;
-		ArrayList<Long> primes = new ArrayList<Long>();
-		long i = 2;
+		ArrayList<Integer> primes = new ArrayList<Integer>();
+		int i = 2;
 		while (i < size) {
 			k=Math.sqrt((double)i)+1.;
 			for(j=0; j<primes.size() && primes.get(j)<=k; ++j) { 
@@ -20,14 +20,8 @@ public class PrimeGenerator {
 				primes.add(i);
 			i += 1;
 		}
-
-/**		System.out.println("Printing primes");
-		for(long l: primes)
-			System.out.println(l);*/
-
 		return primes;
 	}
-
 
 	/**calculate the square root of a biginteger in logarithmic time*/
 	public static BigInteger squareroot(BigInteger x) { 

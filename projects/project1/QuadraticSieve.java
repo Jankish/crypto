@@ -9,24 +9,24 @@ public class QuadraticSieve {
 	private BigInteger Q;
 	private final int L;
 	private final int B;
-	private ArrayList<Long> F;
+	private ArrayList<Integer> F;
 	private int[][] exponents;
 	private BigInteger[] r;
-
+	
 	public QuadraticSieve(BigInteger N, int L, int B) {
 		this.B = B;
 		this.N = N;
 		this.L = L;
 		long start = System.currentTimeMillis();
 		System.out.println("Started clock");
-		F = PrimeGenerator.GeneratePrimeNumbers(B);
+		F = PrimeGenerator.generatePrimeNumbers(B);
 		System.out.println("Generated primes in " + (System.currentTimeMillis() - start)/1000 + " seconds");		
 		exponents = new int[L][F.size()];
 		start = System.currentTimeMillis();
-		generate();
+		findSmoothNumbers();
 		System.out.println("Generated matrices in " + (System.currentTimeMillis() - start)/1000 + " seconds");		
 		start = System.currentTimeMillis();
-		LinkedHashSet<BitSet> solutions = gauss();
+		HashSet<BitSet> solutions = gauss();
 		System.out.println("Generated gauss in " + (System.currentTimeMillis() - start)/1000 + " seconds");		
 		start = System.currentTimeMillis();
 		for (BitSet b : solutions) {
@@ -36,14 +36,6 @@ public class QuadraticSieve {
 			}
 		}
 		System.out.println("No solution found =(");
-			/*
-		for (BitSet b : solutions) {
-			for (int j = 0; j < b.length(); j++) {
-				int k = b.get(j) ? 1 : 0;
-				System.out.print(k + " ");
-			}
-			System.out.print("\n");
-		} */
 	}
 
 	public boolean isSolution(BitSet b) {
@@ -74,26 +66,24 @@ public class QuadraticSieve {
 		return false;
 	}
 
-
-	public void generate() {
+	public void findSmoothNumbers() {
 		int count = 0;
 		int k = 1;
 		int j;
 		r = new BigInteger[L]; 
-		BigInteger current;
-		LinkedHashSet<BitSet> M = new LinkedHashSet<BitSet>();
+		BigInteger current, temp;;
+		HashSet<BitSet> M = new HashSet<BitSet>();
 		while(count < L) {
 			k++;
+			temp = PrimeGenerator.squareroot(N.multiply(new BigInteger(Integer.toString(k))));
 			for(j = 2; j <= k; j++) {
 				if (count >= L)
 					break;
-				current = PrimeGenerator.squareroot(N.multiply(new BigInteger(Integer.toString(k)))).add(new BigInteger(Integer.toString(j))); 
-				//System.out.println("Current -> " + current.toString() + "\n" + "k -> " + k + "\n" + "j -> " + j);
+				current = temp.add(new BigInteger(Integer.toString(j))); 
 				int[] expVector = getExponentVector(current);
 				if (expVector != null) {
 					BitSet b = convertToBits(expVector);
-					if (!M.contains(b)) {
-						M.add(b);
+					if (M.add(b)) {
 						exponents[count] = expVector;
 						r[count] = current;
 						count += 1;
@@ -103,6 +93,7 @@ public class QuadraticSieve {
 		}
 
 	}
+	
 	public BitSet convertToBits(int[] exps) {
 		BitSet b = new BitSet(F.size());
 		for (int i = 0; i < exps.length; i++) {
@@ -111,15 +102,15 @@ public class QuadraticSieve {
 		}
 		return b;
 	}
+
 	private int[] getExponentVector(BigInteger current) {
 		BigInteger rSqr;
 		int[] exponents = new int[F.size()];
 		rSqr = current.pow(2).mod(N);
 		int i=0;
-		//System.out.println("\t rSqr -> " + rSqr.toString());
+		BigInteger temp; 
 		while (!rSqr.equals(BigInteger.ZERO) && !rSqr.equals(BigInteger.ONE)) {
-			BigInteger temp = new BigInteger(Long.toString(F.get(i)));
-			//System.out.println("\t Temp -> " + temp.toString());
+			temp = new BigInteger(Integer.toString(F.get(i)));
 			if (rSqr.mod(temp).equals(BigInteger.ZERO)) {
 				exponents[i] += 1;
 				rSqr = rSqr.divide(temp);
@@ -128,13 +119,11 @@ public class QuadraticSieve {
 				if(i == F.size()) 
 					return null;
 			}
-
 		}
-		//System.out.println(current.toString() + " is found");
 		return exponents;
 	}
 
-	public LinkedHashSet<BitSet> gauss() {
+	public HashSet<BitSet> gauss() {
 		try {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("input"))); 
 			writer.write(L + " " + F.size());
@@ -150,7 +139,7 @@ public class QuadraticSieve {
 			p.waitFor();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("output"))); 
 			int numSolutions = Integer.valueOf(reader.readLine());
-			LinkedHashSet<BitSet> possibleSolutions = new LinkedHashSet<BitSet>();
+			HashSet<BitSet> possibleSolutions = new HashSet<BitSet>();
 			String solution;
 			BitSet b;
 			for (int i = 0; i < numSolutions; i++) {
@@ -175,13 +164,11 @@ public class QuadraticSieve {
 	}
 
 	public static void main(String[] args){
-		BigInteger N = new BigInteger("148042268393964514407317");
-		//BigInteger N = new BigInteger("92434447339770015548544881401");
+		//BigInteger N = new BigInteger("148042268393964514407317");
+		BigInteger N = new BigInteger("92434447339770015548544881401");
 		int L = 1000;
-		int B = 5000;
+		int B = 8000;
 		QuadraticSieve qs = new QuadraticSieve(N, L, B);	
 	}
-
-
 }
 
