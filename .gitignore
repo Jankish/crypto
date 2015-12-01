@@ -1,0 +1,8 @@
+# Ignore following files
+*.class
+out
+src
+*.o
+*~
+output
+*.swp	
