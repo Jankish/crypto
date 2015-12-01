@@ -11,11 +11,9 @@ public class Brujin {
 	public void Solve() {
 		int[] left_sequence = generate_sequence(2,4,true);
 		int[] right_sequence = generate_sequence(5,4,false);
-		System.out.println("left sequence length: " + left_sequence.length);
-		System.out.println("right sequence length: " + right_sequence.length);
 		try {
 			PrintWriter w = new PrintWriter("output");
-			/*for (int i = 0; i < 16; i++) {
+			for (int i = 0; i < 16; i++) {
 				for (int k = 0; k < 624; k+=4) {
 					w.print(Integer.toString(left_sequence[i%16]*5 + right_sequence[k%625]));
 					w.print(Integer.toString(left_sequence[(i+1)%16]*5 + right_sequence[(k+1)%625]));
@@ -28,11 +26,7 @@ public class Brujin {
 					w.print(Integer.toString(left_sequence[(i+2)%16]*5 + right_sequence[1]));
 					w.print(Integer.toString(left_sequence[(i+3)%16]*5 + right_sequence[2]));
 				}
-			}	*/
-
-			for (int i = 0; i < 625; i++) {
-				w.print(Integer.toString(right_sequence[i]));
-			}
+			}	
 			w.println();
 			w.close();
 		} catch(FileNotFoundException e) {
@@ -54,7 +48,7 @@ public class Brujin {
 			if (left) {
 				next = GSR[0] ^ GSR[3];
 			} else {
-				next = (2*GSR[0] + 3*GSR[1] + GSR[3] + 1) % 5;
+                next = (3*(1*GSR[0]+4*GSR[1]+1*GSR[2]+4*GSR[3])) % 5;
 			}
 			// Shift all bits
 			for (int k = 0; k < 3; k++)
