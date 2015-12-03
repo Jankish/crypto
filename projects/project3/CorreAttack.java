@@ -22,6 +22,9 @@ public class CorreAttack {
 		ArrayList<Integer> state1 = generateStream(13, 1);
 		ArrayList<Integer> state2 = generateStream(15, 2);
 		ArrayList<Integer> state3 = generateStream(17, 3);
+		print_state(state1);
+		print_state(state2);
+		print_state(state3);
 		int[] res = new int[(int)N];
 		for (int i = 0; i < N; i++)
 			res[i] = (state1.get(i) + state2.get(i) + state3.get(i) > 1) ? 1 : 0;
@@ -37,6 +40,14 @@ public class CorreAttack {
 			System.out.println("State 1: ");
 			for (int i = 0; i < 13; i++)
 				System.out.print(state1.get(i));
+			System.out.println();
+			System.out.println("State 2: ");
+			for (int i = 0; i < 15; i++)
+				System.out.print(state2.get(i));
+			System.out.println();
+			System.out.println("State 3: ");
+			for (int i = 0; i < 17; i++)
+				System.out.print(state3.get(i));
 			System.out.println();
 		}
 	}
@@ -105,13 +116,10 @@ public class CorreAttack {
 				System.out.println(temp);
 			if (temp > p) {
 				p = temp;	
-				best = output;
+				best = new ArrayList<Integer>(output);
 			}
 		}
 		System.out.println("Best P -> " + p);
-		for (Integer i : best)
-			System.out.print(i);
-		System.out.println();
 		return best;
 	}
 	double hamming(ArrayList<Integer> out) {
