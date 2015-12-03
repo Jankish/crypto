@@ -1,0 +1,127 @@
+import java.util.BitSet;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.File;
+public class CorreAttack {
+	int N;
+	public static void main(String[] args) {
+		int [] keystream = {1,0,1,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,
+			0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,1,0,1,1,0,
+			1,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,1,
+			0,1,1,0,1,0,0,1,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0,1,1,
+			0,1,0,1,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,0,0,1,
+			1,1,1,0,0,1,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,
+			1,0,0,0,1,0,1,1,0,0,0,1,0,0,1,1,0,0,1,0,1,0,0,0,1,
+			0,0,0,1,0,1,0,0,1,0,0,1,1,1,0,1,0,1,1,1,1,0,0,1};
+		N = keystream.length;
+		CorreAttack ca = new CorreAttack();
+		ca.solve();
+	}
+
+	public void Solve() {
+		int[] left_sequence = generate_sequence(2,4,true);
+		int[] right_sequence = generate_sequence(5,4,false);
+		try {
+			PrintWriter w = new PrintWriter("output");
+			for (int i = 0; i < 16; i++) {
+				for (int k = 0; k < 624; k+=4) {
+					w.print(Integer.toString(left_sequence[i%16]*5 + right_sequence[k%625]));
+					w.print(Integer.toString(left_sequence[(i+1)%16]*5 + right_sequence[(k+1)%625]));
+					w.print(Integer.toString(left_sequence[(i+2)%16]*5 + right_sequence[(k+2)%625]));
+					w.print(Integer.toString(left_sequence[(i+3)%16]*5 + right_sequence[(k+3)%625]));
+				}
+				w.print(Integer.toString(left_sequence[i%16]*5 + right_sequence[624]));
+				if (i == 15) {
+					w.print(Integer.toString(left_sequence[(i+1)%16]*5 + right_sequence[0]));
+					w.print(Integer.toString(left_sequence[(i+2)%16]*5 + right_sequence[1]));
+					w.print(Integer.toString(left_sequence[(i+3)%16]*5 + right_sequence[2]));
+				}
+			}	
+			w.println();
+			w.close();
+		} catch(FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int[] generate_sequence(int a, int deg, int lfsr) {
+		int numStates;
+		numStates = (int) Math.pow(2, deg) - 1;;
+		int[] LFSR = new int[deg+1];
+		int[] output = new int[N];
+		int next, out;
+		ArrayList<Tuple> guesses = new ArrayList<Tuple>();
+		LFSR[deg] = 1;
+		for (int i = 0; i < N; i++) {
+			// Get output bit
+			out = LFSR[0];
+			// Get the new value
+			switch(lfsr) {
+				case 1:
+					next = LFSR[0] ^ LFSR[2] ^ LFSR[3] ^ LFSR[6] ^ LFSR[7] ^ LFSR[9] ^ LFSR[11] ^ LFSR[12] ^ LFSR[13];
+					break;
+				case 2:
+					next = LFSR[0] ^ LFSR[2] ^ LFSR[4] ^ LFSR[5] ^ LFSR[8] ^ LFSR[9] ^ LFSR[11] ^ LFSR[13] ^ LFSR[15];
+					break;
+				case 3:
+					next = LFSR[0] ^ LFSR[1] ^ LFSR[4] ^ LFSR[7] ^ LFSR[9] ^ LFSR[12] ^ LFSR[13] ^ LFSR[15] ^ LFSR[17];
+					break;
+				default: 
+					System.err.println("Missing LFSR");
+			}
+			for (int k = 0; k < deg; k++)
+				LFSR[k] = LFSR[k + 1];
+			LFSR[deg] = next;
+			output[i] = out;
+		}
+		for (int m = 0; m < numStates; m++) {
+			// Get output bit
+			// Get the new value
+			switch(lfsr) {
+				case 1:
+					next = LFSR[0] ^ LFSR[2] ^ LFSR[3] ^ LFSR[6] ^ LFSR[7] ^ LFSR[9] ^ LFSR[11] ^ LFSR[12] ^ LFSR[13];
+					break;
+				case 2:
+					next = LFSR[0] ^ LFSR[2] ^ LFSR[4] ^ LFSR[5] ^ LFSR[8] ^ LFSR[9] ^ LFSR[11] ^ LFSR[13] ^ LFSR[15];
+					break;
+				case 3:
+					next = LFSR[0] ^ LFSR[1] ^ LFSR[4] ^ LFSR[7] ^ LFSR[9] ^ LFSR[12] ^ LFSR[13] ^ LFSR[15] ^ LFSR[17];
+					break;
+				default: 
+					System.err.println("Missing LFSR");
+					// Shift all bits
+			}
+			for (int k = 0; k < deg; k++)
+				LFSR[k] = LFSR[k + 1];
+			LFSR[deg] = next;
+			// Calculate hamming_distance
+
+
+
+			// Save 100 best states
+			/*
+			if guesses.isEmpty() {
+				guesses.add(new Tuple(p, N));
+			} else if (p > guesses.get(guesses.size()-1).p) {
+				next = 0;
+				while (p < guesses.get(next)) {
+					next++;
+				}
+				guesses.add(next, new Tuple(p, N));
+				if (guesses.size >= 100) {
+					guesses.remove(guesses.size()-1);
+				}
+			}
+		}
+		return guesses;;
+		class Tuple() {
+			public double p;
+			public int[] N;
+			public int[] state;
+			public Tuple(double p, int[] N, int[] state) {
+				this.p = p;	
+				this.N = N;
+				this.state = state;
+			}
+		} */
+	}
