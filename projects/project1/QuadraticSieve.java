@@ -164,8 +164,8 @@ public class QuadraticSieve {
 	}
 
 	public static void main(String[] args){
-		//BigInteger N = new BigInteger("148042268393964514407317");
-		BigInteger N = new BigInteger("92434447339770015548544881401");
+		BigInteger N = new BigInteger("148042268393964514407317");
+		//BigInteger N = new BigInteger("92434447339770015548544881401");
 		int L = 1000;
 		int B = 8000;
 		QuadraticSieve qs = new QuadraticSieve(N, L, B);	
